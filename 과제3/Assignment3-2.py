@@ -44,9 +44,9 @@ def render(camAng, count):
 
     drawFrame()
 
-        # blue base transformation
+    # blue base transformation
     glPushMatrix()
-    glTranslatef(-.5+(count%360)*.003, 0, 0)
+    glTranslatef(-.5+(count % 360)*.003, 0, 0)
 
     # blue base drawing
     glPushMatrix()
@@ -57,7 +57,7 @@ def render(camAng, count):
 
     # red arm transformation
     glPushMatrix()
-    glRotatef(count%360, 0, 0, 1)
+    glRotatef(count % 360, 0, 0, 1)
     glTranslatef(.5, 0, .01)
 
     # red arm drawing
@@ -69,8 +69,8 @@ def render(camAng, count):
 
     # green arm transformation
     glPushMatrix()
-    glRotatef(count%360, 0, 0, 1)
     glTranslatef(.5, 0, .01)
+    glRotatef(count % 360, 0, 0, 1)
 
     # green arm drawing
     glPushMatrix()
@@ -104,7 +104,7 @@ def main():
 
     glfw.make_context_current(window)
     glfw.set_key_callback(window, key_callback)
-    glfw.swap_interval(1)
+    glfw.swap_interval(2)
 
     count = 0
     while not glfw.window_should_close(window):
