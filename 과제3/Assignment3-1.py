@@ -1,5 +1,6 @@
 import glfw
 from OpenGL.GL import *
+from OpenGL.GLU import *
 import numpy as np
 
 gComposedM = np.identity(3)
@@ -11,23 +12,32 @@ def key_callback(window, key, scancode, action, mods):
 
     # translate -0.1 in x direction(global)
     if key == glfw.KEY_Q and action == glfw.PRESS:
-        th = np.radians(10)
-        newMatrix[:-1, :-1] = np.array([[np.cos(th), -np.sin(th)],
-                                       [np.sin(th), np.cos(th)]])
-        gComposedM = newMatrix @ gComposedM
+        newMatrix[0, -1] = -0.1
+        gComposedM = newMatrix@gComposedM
     # translate 0.1 in x direction(global)
     elif key == glfw.KEY_E and action == glfw.PRESS:
+        newMatrix[0, -1] = 0.1
+        gComposedM = newMatrix@gComposedM
     # rotate 10 degree counterclockwise(local)
     elif key == glfw.KEY_A and action == glfw.PRESS:
+        th = np.radians(10)
+        newMatrix[:-1, :-1] = np.array([[np.cos(th), -np.sin(th)],
+                                        [np.sin(th), np.cos(th)]])
+        gComposedM = gComposedM @ newMatrix
     # rotate 10 degree clockwise(local)
     elif key == glfw.KEY_D and action == glfw.PRESS:
-    # reset triangle with identity matrix
+        # reset triangle with identity matrix
+        th = np.radians(-10)
+        newMatrix[:-1, :-1] = np.array([[np.cos(th), -np.sin(th)],
+                                        [np.sin(th), np.cos(th)]])
+        gComposedM = gComposedM @ newMatrix
     elif key == glfw.KEY_1 and action == glfw.PRESS:
         gComposedM = np.identity(3)
 
 
 def render(T):
-    glClear(GL_COLOR_BUFFER_BIT)
+    glClear(GL_COLOR_BUFFER_BIT |
+            GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
     glBegin(GL_LINES)
@@ -41,16 +51,16 @@ def render(T):
 
     glBegin(GL_TRIANGLES)
     glColor3ub(255, 255, 255)
-    glVertex2fv((T@np.array([0., 0.5, 1.])[:-1])
-    glVertex2fv((T@np.array([0., 0., 1.])[:-1])
-    glVertex2fv((T@np.array([0.5, 0., 1.])[:-1])
+    glVertex2fv((T @ np.array([0., 0.5, 1.]))[:-1])
+    glVertex2fv((T @ np.array([0., 0., 1.]))[:-1])
+    glVertex2fv((T @ np.array([0.5, 0., 1.]))[:-1])
     glEnd()
 
 
 def main():
     if not glfw.init():
         return
-    window=glfw.create_window(640, 640, "2D Trans", None, None)
+    window = glfw.create_window(640, 640, "2D Trans", None, None)
     if not window:
         glfw.terminate()
         return
